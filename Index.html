@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FullRenew Calculadora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        }
+        h2 {
+            font-size: 20px;
+            text-align: left;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        input, select, button {
+            width: calc(100% - 30px);
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #222;
+            color: #fff;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #333;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .important {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logonegrofullrenew.PNG" alt="FullRenew Logo">
+        <h2>Calculadora de Rendimiento</h2>
+        <label for="precio-compra">Precio de Compra (€):</label>
+        <input type="number" id="precio-compra" placeholder="Introduce el precio de compra">
+
+        <label for="precio-venta">Precio de Venta (€):</label>
+        <input type="number" id="precio-venta" placeholder="Introduce el precio de venta">
+
+        <label for="destino">Destino:</label>
+        <select id="destino">
+            <option value="espana">España</option>
+            <option value="internacional">Internacional</option>
+        </select>
+
+        <label for="bateria">¿Añadir batería nueva?:</label>
+        <select id="bateria">
+            <option value="0">No</option>
+            <option value="6" selected>Sí (6 €)</option>
+        </select>
+
+        <button onclick="calcular()">Calcular</button>
+
+        <div class="results" id="resultados"></div>
+    </div>
+
+    <script>
+        function calcular() {
+            const precioCompra = parseFloat(document.getElementById("precio-compra").value);
+            const precioVenta = parseFloat(document.getElementById("precio-venta").value);
+            const destino = document.getElementById("destino").value;
+            const bateria = parseFloat(document.getElementById("bateria").value);
+
+            if (isNaN(precioCompra) || isNaN(precioVenta)) {
+                document.getElementById("resultados").innerHTML = "<p>Por favor, introduce valores válidos.</p>";
+                return;
+            }
+
+            // Margen de beneficio
+            const margen = precioVenta - precioCompra;
+
+            // Impuesto sobre el margen (21%)
+            const impuesto = margen * 0.21;
+
+            // Comisión de BackMarket (11% del precio de venta)
+            const comisionBackMarket = precioVenta * 0.11;
+
+            // Impuesto francés (20% sobre la comisión)
+            const impuestoFrances = comisionBackMarket * 0.20;
+
+            // Envío según destino
+            let envio = destino === "espana" ? 6 : 22;
+
+            // Gasto CCBM para internacional
+            let ccbm = destino === "internacional" ? 5 : 0;
+
+            // Rendimiento final
+            const rendimiento = margen - impuesto - comisionBackMarket - impuestoFrances - envio - bateria - ccbm;
+
+            // Resultados
+            const resultadosHTML = `
+                <p><strong>Margen:</strong> ${margen.toFixed(2)} €</p>
+                <p><strong>Impuesto (21%):</strong> ${impuesto.toFixed(2)} €</p>
+                <p><strong>Comisión BackMarket (11%):</strong> ${comisionBackMarket.toFixed(2)} €</p>
+                <p><strong>Impuesto francés (20% sobre comisión):</strong> ${impuestoFrances.toFixed(2)} €</p>
+                <p><strong>Envío:</strong> ${envio.toFixed(2)} € (${destino === "espana" ? "España" : "Internacional"})</p>
+                <p><strong>Gasto CCBM:</strong> ${ccbm.toFixed(2)} €</p>
+                <p><strong>Costo de batería:</strong> ${bateria.toFixed(2)} €</p>
+                <p><strong>Rendimiento final:</strong> <span class="important">${rendimiento.toFixed(2)} €</span></p>
+            `;
+
+            document.getElementById("resultados").innerHTML = resultadosHTML;
+        }
+    </script>
+</body>
+</html>
